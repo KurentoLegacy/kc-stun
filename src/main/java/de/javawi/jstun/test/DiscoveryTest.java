@@ -41,7 +41,8 @@ public class DiscoveryTest
 	private int localPort;
 	private String stunServer;
 	private int stunPort;
-	private int timeoutInitValue = 300; // ms
+	private int timeoutInitValue = 100;//300; // ms
+	private int timeoutTest = 500;//7900;
 	private MappedAddress ma = null;
 	private ChangedAddress ca = null;
 	private boolean nodeNatted = true;
@@ -160,7 +161,7 @@ public class DiscoveryTest
 			}
 			catch (SocketTimeoutException ste)
 			{
-				if (timeSinceFirstTransmission < 7900)
+				if (timeSinceFirstTransmission < timeoutTest)
 				{
 					LOGGER.debug("Test 1: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
@@ -246,7 +247,7 @@ public class DiscoveryTest
 			}
 			catch (SocketTimeoutException ste)
 			{
-				if (timeSinceFirstTransmission < 7900)
+				if (timeSinceFirstTransmission < timeoutTest)
 				{
 					LOGGER.debug("Test 2: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
@@ -334,7 +335,7 @@ public class DiscoveryTest
 			}
 			catch (SocketTimeoutException ste2)
 			{
-				if (timeSinceFirstTransmission < 7900)
+				if (timeSinceFirstTransmission < timeoutTest)
 				{
 					LOGGER.debug("Test 1 redo with changed address: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
@@ -411,7 +412,7 @@ public class DiscoveryTest
 			}
 			catch (SocketTimeoutException ste)
 			{
-				if (timeSinceFirstTransmission < 7900)
+				if (timeSinceFirstTransmission < timeoutTest)
 				{
 					LOGGER.debug("Test 3: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
