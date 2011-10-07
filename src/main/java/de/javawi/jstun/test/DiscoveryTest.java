@@ -104,7 +104,7 @@ public class DiscoveryTest
 				socketTest1.connect(InetAddress.getByName(stunServer), stunPort);
 				socketTest1.setSoTimeout(timeout);
 
-				System.out.println("!!!!! SocketAddress: " + socketTest1.getLocalSocketAddress());
+				LOGGER.debug("!!!!! SocketAddress: " + socketTest1.getLocalSocketAddress());
 				
 				MessageHeader sendMH = new MessageHeader(MessageHeader.MessageHeaderType.BindingRequest);
 				sendMH.generateTransactionID();
@@ -115,7 +115,7 @@ public class DiscoveryTest
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
 				socketTest1.send(send);
-				System.out.println("Test 1: Binding Request sent.");
+				LOGGER.debug("Test 1: Binding Request sent.");
 
 				MessageHeader receiveMH = new MessageHeader();
 				while (!(receiveMH.equalTransactionID(sendMH)))
@@ -132,14 +132,14 @@ public class DiscoveryTest
 				if (ec != null)
 				{
 					di.setError(ec.getResponseCode(), ec.getReason());
-					System.out.println("Message header contains an Errorcode message attribute.");
+					LOGGER.debug("Message header contains an Errorcode message attribute.");
 					return false;
 				}
 				if ((ma == null) || (ca == null))
 				{
 					di.setError(700,
 							"The server is sending an incomplete response (Mapped Address and Changed Address message attributes are missing). The client should not retry.");
-					System.out.println("Response does not contain a Mapped Address or Changed Address message attribute.");
+					LOGGER.debug("Response does not contain a Mapped Address or Changed Address message attribute.");
 					return false;
 				}
 				else
@@ -148,14 +148,14 @@ public class DiscoveryTest
 					di.setLocalPort(socketTest1.getLocalPort());
 					if ((ma.getPort() == socketTest1.getLocalPort()) && (ma.getAddress().getInetAddress().equals(socketTest1.getLocalAddress())))
 					{
-						System.out.println("Node is not natted.");
+						LOGGER.debug("Node is not natted.");
 						di.setPublicPort(socketTest1.getLocalPort());
 						nodeNatted = false;
 					}
 					else
 					{
 						di.setPublicPort(ma.getPort());
-						System.out.println("Node is natted.");
+						LOGGER.debug("Node is natted.");
 					}
 					return true;
 				}
@@ -164,7 +164,7 @@ public class DiscoveryTest
 			{
 				if (timeSinceFirstTransmission < timeoutTest)
 				{
-					System.out.println("Test 1: Socket timeout while receiving the response.");
+					LOGGER.debug("Test 1: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
 					int timeoutAddValue = (timeSinceFirstTransmission * 2);
 					if (timeoutAddValue > timeoutSecond)//1600)
@@ -174,9 +174,9 @@ public class DiscoveryTest
 				else
 				{
 					// node is not capable of udp communication
-					System.out.println("Test 1: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
+					LOGGER.debug("Test 1: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
 					di.setBlockedUDP();
-					System.out.println("Node is not capable of UDP communication.");
+					LOGGER.debug("Node is not capable of UDP communication.");
 					return false;
 				}
 			}
@@ -208,7 +208,7 @@ public class DiscoveryTest
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
 				sendSocket.send(send);
-				System.out.println("Test 2: Binding Request sent.");
+				LOGGER.debug("Test 2: Binding Request sent.");
 
 				int localPort = sendSocket.getLocalPort();
 				InetAddress localAddress = sendSocket.getLocalAddress();
@@ -231,18 +231,18 @@ public class DiscoveryTest
 				if (ec != null)
 				{
 					di.setError(ec.getResponseCode(), ec.getReason());
-					System.out.println("Message header contains an Errorcode message attribute.");
+					LOGGER.debug("Message header contains an Errorcode message attribute.");
 					return false;
 				}
 				if (!nodeNatted)
 				{
 					di.setOpenAccess();
-					System.out.println("Node has open access to the Internet (or, at least the node is behind a full-cone NAT without translation).");
+					LOGGER.debug("Node has open access to the Internet (or, at least the node is behind a full-cone NAT without translation).");
 				}
 				else
 				{
 					di.setFullCone();
-					System.out.println("Node is behind a full-cone NAT.");
+					LOGGER.debug("Node is behind a full-cone NAT.");
 				}
 				return false;
 			}
@@ -250,7 +250,7 @@ public class DiscoveryTest
 			{
 				if (timeSinceFirstTransmission < timeoutTest)
 				{
-					System.out.println("Test 2: Socket timeout while receiving the response.");
+					LOGGER.debug("Test 2: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
 					int timeoutAddValue = (timeSinceFirstTransmission * 2);
 					if (timeoutAddValue > timeoutSecond)//1600)
@@ -259,11 +259,11 @@ public class DiscoveryTest
 				}
 				else
 				{
-					System.out.println("Test 2: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
+					LOGGER.debug("Test 2: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
 					if (!nodeNatted)
 					{
 						di.setSymmetricUDPFirewall();
-						System.out.println("Node is behind a symmetric UDP firewall.");
+						LOGGER.debug("Node is behind a symmetric UDP firewall.");
 						return false;
 					}
 					else
@@ -299,7 +299,7 @@ public class DiscoveryTest
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
 				socketTest1.send(send);
-				System.out.println("Test 1 redo with changed address: Binding Request sent.");
+				LOGGER.debug("Test 1 redo with changed address: Binding Request sent.");
 
 				MessageHeader receiveMH = new MessageHeader();
 				while (!(receiveMH.equalTransactionID(sendMH)))
@@ -314,13 +314,13 @@ public class DiscoveryTest
 				if (ec != null)
 				{
 					di.setError(ec.getResponseCode(), ec.getReason());
-					System.out.println("Message header contains an Errorcode message attribute.");
+					LOGGER.debug("Message header contains an Errorcode message attribute.");
 					return false;
 				}
 				if (ma2 == null)
 				{
 					di.setError(700, "The server is sending an incomplete response (Mapped Address message attribute is missing). The client should not retry.");
-					System.out.println("Response does not contain a Mapped Address message attribute.");
+					LOGGER.debug("Response does not contain a Mapped Address message attribute.");
 					return false;
 				}
 				else
@@ -328,7 +328,7 @@ public class DiscoveryTest
 					if ((ma.getPort() != ma2.getPort()) || (!(ma.getAddress().getInetAddress().equals(ma2.getAddress().getInetAddress()))))
 					{
 						di.setSymmetric();
-						System.out.println("Node is behind a symmetric NAT.");
+						LOGGER.debug("Node is behind a symmetric NAT.");
 						return false;
 					}
 				}
@@ -338,7 +338,7 @@ public class DiscoveryTest
 			{
 				if (timeSinceFirstTransmission < timeoutTest)
 				{
-					System.out.println("Test 1 redo with changed address: Socket timeout while receiving the response.");
+					LOGGER.debug("Test 1 redo with changed address: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
 					int timeoutAddValue = (timeSinceFirstTransmission * 2);
 					if (timeoutAddValue > timeoutSecond)//1600)
@@ -347,7 +347,7 @@ public class DiscoveryTest
 				}
 				else
 				{
-					System.out.println("Test 1 redo with changed address: Socket timeout while receiving the response.  Maximum retry limit exceed. Give up.");
+					LOGGER.debug("Test 1 redo with changed address: Socket timeout while receiving the response.  Maximum retry limit exceed. Give up.");
 					return false;
 				}
 			}
@@ -378,7 +378,7 @@ public class DiscoveryTest
 				byte[] data = sendMH.getBytes();
 				DatagramPacket send = new DatagramPacket(data, data.length);
 				sendSocket.send(send);
-				System.out.println("Test 3: Binding Request sent.");
+				LOGGER.debug("Test 3: Binding Request sent.");
 
 				int localPort = sendSocket.getLocalPort();
 				InetAddress localAddress = sendSocket.getLocalAddress();
@@ -401,13 +401,13 @@ public class DiscoveryTest
 				if (ec != null)
 				{
 					di.setError(ec.getResponseCode(), ec.getReason());
-					System.out.println("Message header contains an Errorcode message attribute.");
+					LOGGER.debug("Message header contains an Errorcode message attribute.");
 					return;
 				}
 				if (nodeNatted)
 				{
 					di.setRestrictedCone();
-					System.out.println("Node is behind a restricted NAT.");
+					LOGGER.debug("Node is behind a restricted NAT.");
 					return;
 				}
 			}
@@ -415,7 +415,7 @@ public class DiscoveryTest
 			{
 				if (timeSinceFirstTransmission < timeoutTest)
 				{
-					System.out.println("Test 3: Socket timeout while receiving the response.");
+					LOGGER.debug("Test 3: Socket timeout while receiving the response.");
 					timeSinceFirstTransmission += timeout;
 					int timeoutAddValue = (timeSinceFirstTransmission * 2);
 					if (timeoutAddValue > timeoutSecond)//1600)
@@ -424,9 +424,9 @@ public class DiscoveryTest
 				}
 				else
 				{
-					System.out.println("Test 3: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
+					LOGGER.debug("Test 3: Socket timeout while receiving the response. Maximum retry limit exceed. Give up.");
 					di.setPortRestrictedCone();
-					System.out.println("Node is behind a port restricted NAT.");
+					LOGGER.debug("Node is behind a port restricted NAT.");
 					return;
 				}
 			}
