@@ -41,9 +41,9 @@ public class DiscoveryTest
 	private int localPort;
 	private String stunServer;
 	private int stunPort;
-	private int timeoutInitValue = 200; // ms
-	private int timeoutTest = 500;
-	private int timeoutSecond = 300;
+	private int timeoutInitValue = 400; // ms
+	private int timeoutTest = 2000;
+	private int timeoutSecond = 600;
 	private MappedAddress ma = null;
 	private ChangedAddress ca = null;
 	private boolean nodeNatted = true;
