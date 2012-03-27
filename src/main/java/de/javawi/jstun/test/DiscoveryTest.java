@@ -90,6 +90,36 @@ public class DiscoveryTest
 		return di;
 	}
 
+	/**
+	 * Test that only do test1 of STUN to retrieve the public IP and the public
+	 * ports.
+	 * 
+	 * @return DiscoveryInfo with public IP and public ports info.
+	 * @throws UtilityException
+	 * @throws SocketException
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws MessageAttributeParsingException
+	 * @throws MessageAttributeException
+	 * @throws MessageHeaderParsingException
+	 */
+	public DiscoveryInfo testPublicPorts() throws UtilityException,
+			SocketException, UnknownHostException, IOException,
+			MessageAttributeParsingException, MessageAttributeException,
+			MessageHeaderParsingException {
+		ma = null;
+		ca = null;
+		nodeNatted = true;
+		socketTest1 = null;
+		di = new DiscoveryInfo(localAddress, stunServer);
+
+		test1();
+
+		socketTest1.close();
+
+		return di;
+	}
+
 	private boolean test1() throws UtilityException, SocketException, UnknownHostException, IOException, MessageAttributeParsingException, MessageHeaderParsingException
 	{
 		int timeSinceFirstTransmission = 0;
